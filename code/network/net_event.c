@@ -1,4 +1,4 @@
-function void
+internal void
 NE_SendDataToPeer(N_Peer *peer, void *data, U32 data_size, B32 reliable)
 {
 	N_NetEventType type = N_NetEventType_Recieve;
@@ -21,7 +21,7 @@ NE_SendDataToPeer(N_Peer *peer, void *data, U32 data_size, B32 reliable)
 	N_SendPacketToPeer(peer, &packet, force_send);
 }
 
-function N_NetEventList *
+internal N_NetEventList *
 NE_RecieveNetEventsFromClients(N_Host *host, MemoryArena *arena, F64 dt)
 {
 	N_NetEventList *result = PushStruct(arena, N_NetEventList);
@@ -77,7 +77,7 @@ NE_RecieveNetEventsFromClients(N_Host *host, MemoryArena *arena, F64 dt)
 	return result;
 }
 
-function N_NetEventList *
+internal N_NetEventList *
 NE_RecieveNetEventsFromHost(N_Client *client, MemoryArena *arena, F64 dt)
 {
 	N_NetEventList *result = PushStruct(arena, N_NetEventList);

@@ -1,6 +1,6 @@
 #include "app.h"
 
-function B32
+internal B32
 UpdateApp(App *app, B32 is_host, F64 dt)
 {
 	B32 exit = false;

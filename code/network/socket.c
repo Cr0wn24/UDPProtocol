@@ -1,4 +1,4 @@
-function B32
+internal B32
 InitializeSockets()
 {
 	WSADATA wsa_data;
@@ -8,7 +8,7 @@ InitializeSockets()
 	return(result);
 }
 
-function B32
+internal B32
 SocketOpen(Socket *sock, U16 port)
 {
 	B32 result = true;
@@ -38,7 +38,7 @@ SocketOpen(Socket *sock, U16 port)
 	return(result);
 }
 
-function B32
+internal B32
 SocketSetNonBlocking(Socket sock)
 {
 	B32 result = true;
@@ -53,7 +53,7 @@ SocketSetNonBlocking(Socket sock)
 	return(result);
 }
 
-function B32
+internal B32
 SocketSend(Socket sock, Address address, void *data, S32 data_size)
 {
 	B32 result = false;
@@ -73,7 +73,7 @@ SocketSend(Socket sock, Address address, void *data, S32 data_size)
 	return(result);
 }
 
-function S32
+internal S32
 SocketRecieve(Socket socket, Address *sender, void *data, S32 data_size)
 {
 	SOCKADDR_IN from;
@@ -92,7 +92,7 @@ SocketRecieve(Socket socket, Address *sender, void *data, S32 data_size)
 	return(bytes_recieved);
 }
 
-function Address
+internal Address
 CreateAddress(U8 a, U8 b, U8 c, U8 d, U16 port)
 {
 	Address result;
@@ -103,7 +103,7 @@ CreateAddress(U8 a, U8 b, U8 c, U8 d, U16 port)
 	return(result);
 }
 
-function B32
+internal B32
 AddressMatch(Address a, Address b)
 {
 	return a.ip == b.ip && a.port == b.port;

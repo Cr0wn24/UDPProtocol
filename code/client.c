@@ -1,4 +1,4 @@
-function void
+internal void
 TickUpdateClient(App *app)
 {
 	TempMemoryArena scratch = GetScratch(0, 0);
@@ -45,7 +45,7 @@ TickUpdateClient(App *app)
 	ReleaseScratch(scratch);
 }
 
-function B32
+internal B32
 UpdateClient(App *app, F64 dt)
 {
 	B32 exit = false;

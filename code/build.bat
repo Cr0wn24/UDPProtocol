@@ -1,34 +1,25 @@
 @echo off
-
-set ft_root=..\code\core_layer\renderer\ext\freetype\
+set core_layer_root=..\code\core_layer
+set ft_root=..\external\freetype\
 
 set disabled_warnings=-wd4201 -wd4100 -wd4152 -wd4189 -wd4101 -wd4456 -W4 -WX 
-set common_defines=-D_CRT_SECURE_NO_WARNINGS -DDEBUG
-set common_compiler_flags=%common_defines% -Zi -FC -Od -nologo -DEBUG:FULL
-set include_dirs=-I%ft_root%include\ -I%ft_root%
-
-set ft_files=
-set ft_files=%ft_files% %ft_root%\src\base\ftsystem.c
-set ft_files=%ft_files% %ft_root%\src\base\ftinit.c
-set ft_files=%ft_files% %ft_root%\src\base\ftdebug.c
-set ft_files=%ft_files% %ft_root%\src\base\ftbase.c
-set ft_files=%ft_files% %ft_root%\src\base\ftbitmap.c
-set ft_files=%ft_files% %ft_root%\src\base\ftbbox.c
-set ft_files=%ft_files% %ft_root%\src\base\ftglyph.c
-
-set ft_files=%ft_files% %ft_root%\src\truetype\truetype.c
-set ft_files=%ft_files% %ft_root%\src\sfnt\sfnt.c
-set ft_files=%ft_files% %ft_root%\src\raster\raster.c
-set ft_files=%ft_files% %ft_root%\src\psnames\psnames.c
-set ft_files=%ft_files% %ft_root%\src\gzip\ftgzip.c
-set ft_files=%ft_files% %ft_root%\src\smooth\smooth.c
+set common_defines=-D_CRT_SECURE_NO_WARNINGS
+set common_compiler_flags=%common_defines% %disabled_warnings% -Zi -FC -Od -nologo
 
 if not exist ..\build mkdir ..\build
 pushd ..\build
 
-set common_compiler_flags=%common_compiler_flags% %disabled_warnings% %include_dirs%
+if not exist freetype.lib (
+	echo -- freetype.lib was not found. Building freetype --
+	call %core_layer_root%\misc\build_freetype.bat %core_layer_root%
+)
 
-cl ..\code\main.c %common_compiler_flags% -DEBUG:FULL -link -incremental:no -subsystem:console gdi32.lib user32.lib kernel32.lib winmm.lib ws2_32.lib
+set shader_path=%core_layer_root%\res\shaders
+set shader_output_path=%core_layer_root%\renderer\backends\d3d11
+fxc.exe /nologo /T vs_5_0 /E vs /O3 /WX /Zpc /Ges /Fh %shader_output_path%\d3d11_vshader.h /Vn d3d11_vshader /Qstrip_reflect /Qstrip_debug /Qstrip_priv %shader_path%\shader.hlsl
+fxc.exe /nologo /T ps_5_0 /E ps /O3 /WX /Zpc /Ges /Fh %shader_output_path%\d3d11_pshader.h /Vn d3d11_pshader /Qstrip_reflect /Qstrip_debug /Qstrip_priv %shader_path%\shader.hlsl
+
+cl ..\code\main.c -I%core_layer_root%\..\ -I%ft_root%include\ %common_compiler_flags% -DEBUG:FULL -link -incremental:no
 
 del *.obj
 

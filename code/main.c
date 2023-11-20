@@ -1,8 +1,11 @@
+#pragma comment(lib,"Ws2_32.lib")
+
 #include "core_layer/base/base_inc.h"
 #include "core_layer/os/os_win32_inc.h"
 
 #include "core_layer/base/base_inc.c"
 #include "core_layer/os/os_win32_inc.c"
+
 
 #define TICK_RATE 30
 #define TICK_LENGTH (1.0f / (F32)TICK_RATE)
@@ -21,7 +24,7 @@
 #include "client.c"
 #include "app.c"
 
-function S32
+internal S32
 EntryPoint(String8List args)
 {
 	CoreInit();
@@ -30,8 +33,8 @@ EntryPoint(String8List args)
 
 #define IF_CMD_ARG(s) if(Str8Match(node->string, Str8Lit(Glue("-", s))))
 	for(String8Node *node = args.first;
-		node != 0;
-		node = node->next)
+			node != 0;
+			node = node->next)
 	{
 		IF_CMD_ARG("host")
 		{

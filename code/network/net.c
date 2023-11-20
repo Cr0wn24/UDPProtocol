@@ -8,7 +8,7 @@
 
 global N_NetState net_state;
 
-function void
+internal void
 N_PacketFree(N_PacketStorage *storage, N_Packet *packet)
 {
 	N_FreePacket *free_packet = (N_FreePacket *)packet;
@@ -16,7 +16,7 @@ N_PacketFree(N_PacketStorage *storage, N_Packet *packet)
 	storage->next_free_packet = free_packet;
 }
 
-function N_Packet *
+internal N_Packet *
 N_PacketAlloc(N_PacketStorage *storage)
 {
 	N_Packet *result = (N_Packet *)storage->next_free_packet;
@@ -27,7 +27,7 @@ N_PacketAlloc(N_PacketStorage *storage)
 	return(result);
 }
 
-function void
+internal void
 N_InitPacketStorage(MemoryArena *arena, U32 packet_storage_size)
 {
 	N_PacketStorage *packet_storage = &net_state.packet_storage;
@@ -41,7 +41,7 @@ N_InitPacketStorage(MemoryArena *arena, U32 packet_storage_size)
 	}
 }
 
-function void
+internal void
 N_SendPacket(Address address, N_Packet *packet)
 {
 	Assert(packet);
@@ -49,7 +49,7 @@ N_SendPacket(Address address, N_Packet *packet)
 	SocketSend(net_state.socket, address, packet, sizeof(N_PacketHeader) + packet->header.data_size);
 }
 
-function N_Packet *
+internal N_Packet *
 N_GetNextEmptyReliableQueueEntry(N_Peer *peer)
 {
 	N_Packet *result = 0;
@@ -63,10 +63,10 @@ N_GetNextEmptyReliableQueueEntry(N_Peer *peer)
 
 #if NET_DEBUG
 #define N_SendPacketToPeer(peer, packet, force) N_SendPacketToPeer_(peer, packet, force, __FILE__, __LINE__) 
-function void
+internal void
 N_SendPacketToPeer_(N_Peer *peer, N_Packet *packet, B32 force_send, char *file, S32 line)
 #else
-function void
+internal void
 N_SendPacketToPeer(N_Peer *peer, N_Packet *packet, B32 force_send)
 #endif
 {
@@ -183,7 +183,7 @@ N_SendPacketToPeer(N_Peer *peer, N_Packet *packet, B32 force_send)
 	}
 }
 
-function void
+internal void
 N_SendPacketToHost(N_Client *client, N_Packet *packet)
 {
 	Assert(client);
@@ -193,7 +193,7 @@ N_SendPacketToHost(N_Client *client, N_Packet *packet)
 	N_SendPacketToPeer(&client->host, packet, false);
 }
 
-function void
+internal void
 N_SendPacketToClient(N_Peer *client, N_Packet *packet)
 {
 	Assert(client);
@@ -211,7 +211,7 @@ N_SendPacketToClient(N_Peer *client, N_Packet *packet)
 }
 
 
-function N_PacketList *
+internal N_PacketList *
 N_RecieveAllPackets(MemoryArena *arena)
 {
 	Assert(arena);
@@ -254,7 +254,7 @@ N_RecieveAllPackets(MemoryArena *arena)
 	return result;
 }
 
-function N_Peer *
+internal N_Peer *
 N_Host_GetNextEmptyPeer(N_Host *host)
 {
 	N_Peer *result = 0;
@@ -272,7 +272,7 @@ N_Host_GetNextEmptyPeer(N_Host *host)
 	return result;
 }
 
-function N_Peer *
+internal N_Peer *
 N_Host_GetConnectedPeerByAddress(N_Host *host, Address address)
 {
 	N_Peer *result = 0;
@@ -292,7 +292,7 @@ N_Host_GetConnectedPeerByAddress(N_Host *host, Address address)
 	return(result);
 }
 
-function N_Packet *
+internal N_Packet *
 N_GetNextReliablePacketInQueue(N_Peer *peer)
 {
 	Assert(peer->reliable_packets_waiting_count);
@@ -303,7 +303,7 @@ N_GetNextReliablePacketInQueue(N_Peer *peer)
 	return result;
 }
 
-function void
+internal void
 N_ProccessRecievedPacket(N_Peer *peer, N_Packet *packet)
 {
 	peer->recieved_packets[packet->header.sequence_number % ArrayCount(peer->recieved_packets)] = *packet;
@@ -345,7 +345,7 @@ N_ProccessRecievedPacket(N_Peer *peer, N_Packet *packet)
 	}
 }
 
-function void
+internal void
 N_ProcessSentPackets(N_Peer *peer, F64 dt)
 {
 	Assert(peer);
@@ -389,7 +389,7 @@ N_ProcessSentPackets(N_Peer *peer, F64 dt)
 	N_SendPacketToPeer(peer, &packet, true);
 }
 
-function N_PeerPacketList *
+internal N_PeerPacketList *
 N_Host_RecieveFromClients(N_Host *host, MemoryArena *arena, F64 dt)
 {
 	Assert(host);
@@ -530,7 +530,7 @@ N_Host_RecieveFromClients(N_Host *host, MemoryArena *arena, F64 dt)
 	return result;
 }
 
-function N_PacketList *
+internal N_PacketList *
 N_Client_RecieveFromHost(N_Client *client, MemoryArena *arena, F64 dt)
 {
 	Assert(client);
@@ -622,14 +622,14 @@ N_Client_RecieveFromHost(N_Client *client, MemoryArena *arena, F64 dt)
 	return result;
 }
 
-function void
+internal void
 N_Open(U16 port)
 {
 	SocketOpen(&net_state.socket, port);
 	SocketSetNonBlocking(net_state.socket);
 }
 
-function B32
+internal B32
 N_Client_ConnectToServer(N_Client *client, Address address)
 {
 	// NOTE(hampus): Send connection request and wait for answeer
@@ -698,7 +698,7 @@ N_Client_ConnectToServer(N_Client *client, Address address)
 	return(accepted);
 }
 
-function B32
+internal B32
 N_PeerIsValid(N_Peer *peer)
 {
 	return(peer->valid);

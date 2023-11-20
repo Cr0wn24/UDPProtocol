@@ -1,4 +1,4 @@
-function void
+internal void
 TickUpdateHost(App *app)
 {
 	TempMemoryArena scratch = GetScratch(0, 0);
@@ -54,7 +54,7 @@ TickUpdateHost(App *app)
 	ReleaseScratch(scratch);
 }
 
-function B32
+internal B32
 UpdateHost(App *app, F64 dt)
 {
 	B32 exit = false;
